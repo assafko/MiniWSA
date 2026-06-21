@@ -1,0 +1,52 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.miniwsa'
+version = '1.0.0'
+description = 'Security analytics backend service for ingesting and analyzing security events'
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot Web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Spring Data JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // PostgreSQL Driver
+    runtimeOnly 'org.postgresql:postgresql:42.7.1'
+
+    // Jakarta Bean Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Jackson for JSON processing
+    implementation 'org.springframework.boot:spring-boot-starter-json'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // Spring Boot Test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+springBoot {
+    mainClass = 'com.miniwsa.MiniSecurityAnalyticsApplication'
+}
+
