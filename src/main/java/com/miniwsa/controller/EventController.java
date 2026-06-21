@@ -2,50 +2,67 @@ package com.miniwsa.controller;
 
 import com.miniwsa.dto.SecurityEventRequest;
 import com.miniwsa.dto.SecurityEventResponse;
+import com.miniwsa.kafka.SecurityEventProducer;
 import com.miniwsa.service.EventService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * REST endpoints for security event ingestion and retrieval.
+ * Events are sent to Kafka topic for asynchronous processing to handle burst traffic.
  */
+@Slf4j
 @RestController
 @RequestMapping("/v1/events")
 public class EventController {
 
     private final EventService eventService;
+    private final SecurityEventProducer securityEventProducer;
 
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService, SecurityEventProducer securityEventProducer) {
         this.eventService = eventService;
+        this.securityEventProducer = securityEventProducer;
     }
 
     /**
-     * Ingest a single security event.
+     * Ingest a single security event asynchronously via Kafka.
      *
      * @param request the security event request
-     * @return 201 Created with the enriched event
+     * @return 202 Accepted indicating the event has been queued for processing
      */
     @PostMapping("/ingest")
-    public ResponseEntity<SecurityEventResponse> ingestEvent(@Valid @RequestBody SecurityEventRequest request) {
-        SecurityEventResponse response = eventService.ingestEvent(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<String> ingestEvent(@Valid @RequestBody SecurityEventRequest request) {
+        log.info("Received ingest request for event: {}", request.getEventId());
+
+        // Send event to Kafka for asynchronous processing
+        securityEventProducer.sendEvent(request);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body("Event queued for processing: " + request.getEventId());
     }
 
     /**
-     * Ingest multiple security events in batch.
+     * Ingest multiple security events in batch asynchronously via Kafka.
      *
      * @param requests list of security event requests
-     * @return 201 Created with list of enriched events
+     * @return 202 Accepted indicating all events have been queued for processing
      */
     @PostMapping("/ingest/batch")
-    public ResponseEntity<List<SecurityEventResponse>> ingestBatchEvents(
+    public ResponseEntity<String> ingestBatchEvents(
             @Valid @RequestBody List<SecurityEventRequest> requests) {
-        List<SecurityEventResponse> responses = eventService.ingestBatchEvents(requests);
-        return ResponseEntity.status(HttpStatus.CREATED).body(responses);
+        log.info("Received batch ingest request for {} events", requests.size());
+
+        // Send all events to Kafka for asynchronous processing
+        securityEventProducer.sendEventBatch(requests);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body("Batch of " + requests.size() + " events queued for processing");
     }
 }
 

@@ -18,6 +18,25 @@ spring:
     init:
       mode: always
       data-locations: classpath:data.sql
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 3
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: security-events-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+      auto-offset-reset: earliest
+
+kafka:
+  topics:
+    security-events: security-events-topic
 
 server:
   port: 8080
@@ -29,5 +48,6 @@ logging:
     root: INFO
     com.miniwsa: DEBUG
     org.springframework.web: DEBUG
+    org.apache.kafka: INFO
 
 

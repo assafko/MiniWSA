@@ -52,6 +52,37 @@ public class SecurityEvent {
     @Column(nullable = false)
     private Integer threatScore;
 
+    // Additional fields aligned with incoming request
+    @Column
+    private String eventId;
+
+    @Column
+    private Long configId;
+
+    @Column
+    private String policyId;
+
+    @Column
+    private String hostname;
+
+    @Column
+    private Integer statusCode;
+
+    @Column
+    private String userAgent;
+
+    @Column(name = "geo_country")
+    private String geoCountry;
+
+    @Column(name = "geo_city")
+    private String geoCity;
+
+    @Column
+    private Integer requestSize;
+
+    @Column
+    private Integer responseSize;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Long createdAt;
 

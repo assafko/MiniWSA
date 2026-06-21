@@ -78,6 +78,16 @@ public class EventService {
                 .attackType(event.getAttackType())
                 .threatScore(event.getThreatScore())
                 .createdAt(event.getCreatedAt())
+                .eventId(event.getEventId())
+                .configId(event.getConfigId())
+                .policyId(event.getPolicyId())
+                .hostname(event.getHostname())
+                .statusCode(event.getStatusCode())
+                .userAgent(event.getUserAgent())
+                .geoCountry(event.getGeoCountry())
+                .geoCity(event.getGeoCity())
+                .requestSize(event.getRequestSize())
+                .responseSize(event.getResponseSize())
                 .build();
     }
 }

@@ -7,6 +7,8 @@ import com.miniwsa.repository.RuleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+
 /**
  * Orchestrates event enrichment by:
  * 1. Classifying the attack type based on rule category
@@ -38,12 +40,27 @@ public class EventEnrichmentService {
      */
     @Transactional(readOnly = true)
     public SecurityEvent enrichEvent(SecurityEventRequest request) {
-        // Fetch the rule
-        Rule rule = ruleRepository.findByRuleId(request.getRuleId())
-                .orElseThrow(() -> new IllegalArgumentException("Rule not found: " + request.getRuleId()));
+        // Validate nested rule.id and fetch the rule
+        if (request.getRule() == null || request.getRule().getId() == null) {
+            throw new IllegalArgumentException("rule.id is required in the request");
+        }
+        Rule rule = ruleRepository.findByRuleId(request.getRule().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Rule not found: " + request.getRule().getId()));
 
         // Classify attack type
         String attackType = classificationService.classifyAttackType(rule.getCategory());
+
+        // Parse provided timestamp (ISO-8601) to epoch millis; fall back to numeric parse or current time
+        Long eventTimestamp;
+        try {
+            eventTimestamp = Instant.parse(request.getTimestamp()).toEpochMilli();
+        } catch (Exception e) {
+            try {
+                eventTimestamp = Long.parseLong(request.getTimestamp());
+            } catch (Exception ex) {
+                eventTimestamp = System.currentTimeMillis();
+            }
+        }
 
         // Calculate threat score
         Integer threatScore = threatScoreCalculator.calculateThreatScore(
@@ -56,18 +73,28 @@ public class EventEnrichmentService {
         // Set receivedAt timestamp server-side
         Long receivedAt = System.currentTimeMillis();
 
-        // Build and return enriched event
+        // Build and return enriched event mapping new fields
         return SecurityEvent.builder()
+                .eventId(request.getEventId())
                 .clientIp(request.getClientIp())
                 .path(request.getPath())
-                .httpMethod(request.getHttpMethod())
+                .httpMethod(request.getMethod())
                 .action(request.getAction())
                 .payload(request.getPayload())
                 .rule(rule)
-                .timestamp(request.getTimestamp())
+                .timestamp(eventTimestamp)
                 .receivedAt(receivedAt)
                 .attackType(attackType)
                 .threatScore(threatScore)
+                .configId(request.getConfigId())
+                .policyId(request.getPolicyId())
+                .hostname(request.getHostname())
+                .statusCode(request.getStatusCode())
+                .userAgent(request.getUserAgent())
+                .geoCountry(request.getGeoLocation() != null ? request.getGeoLocation().getCountry() : null)
+                .geoCity(request.getGeoLocation() != null ? request.getGeoLocation().getCity() : null)
+                .requestSize(request.getRequestSize())
+                .responseSize(request.getResponseSize())
                 .build();
     }
 }

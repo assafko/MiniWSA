@@ -24,5 +24,15 @@ public class SecurityEventResponse {
     private String attackType;
     private Integer threatScore;
     private Long createdAt;
+    private String eventId;
+    private Long configId;
+    private String policyId;
+    private String hostname;
+    private Integer statusCode;
+    private String userAgent;
+    private String geoCountry;
+    private String geoCity;
+    private Integer requestSize;
+    private Integer responseSize;
 }
 
