@@ -28,7 +28,7 @@ if ! command -v docker-compose &> /dev/null; then
     exit 1
 fi
 
-echo -e "${BLUE}Step 1: Starting Docker containers (PostgreSQL, Zookeeper, Kafka)${NC}"
+echo -e "${BLUE}Step 1: Starting Docker containers (PostgreSQL, Kafka)${NC}"
 docker-compose up -d
 echo -e "${GREEN}✓ Docker containers started${NC}"
 echo ""
@@ -98,4 +98,3 @@ echo -e "${BLUE}💾 Database:${NC}"
 echo "  Connection: psql postgresql://miniwsa_user:miniwsa_password@localhost/miniwsa_db"
 echo "  View events: SELECT * FROM security_events ORDER BY created_at DESC LIMIT 20;"
 echo ""
-
