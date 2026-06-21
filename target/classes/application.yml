@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: mini-security-analytics
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/miniwsa_db
+    username: miniwsa_user
+    password: miniwsa_password
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+logging:
+  level:
+    root: INFO
+    com.miniwsa: DEBUG
+    org.springframework.web: DEBUG
+
+
