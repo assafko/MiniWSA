@@ -4,6 +4,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    defer-datasource-initialization: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -49,5 +50,3 @@ logging:
     com.miniwsa: DEBUG
     org.springframework.web: DEBUG
     org.apache.kafka: INFO
-
-

@@ -45,7 +45,7 @@ check_services() {
 check_kafka_topic() {
     echo -e "${BLUE}Step 2: Checking Kafka topic...${NC}"
 
-    docker exec $KAFKA_CONTAINER kafka-topics.sh \
+    docker exec $KAFKA_CONTAINER /opt/kafka/bin/kafka-topics.sh \
         --bootstrap-server $BOOTSTRAP_SERVER \
         --describe \
         --topic $TOPIC
@@ -140,7 +140,7 @@ view_kafka_messages() {
     echo "(Showing last 3 messages with a timeout of 5 seconds)"
     echo ""
 
-    timeout 5 docker exec $KAFKA_CONTAINER kafka-console-consumer.sh \
+    timeout 5 docker exec $KAFKA_CONTAINER /opt/kafka/bin/kafka-console-consumer.sh \
         --bootstrap-server $BOOTSTRAP_SERVER \
         --topic $TOPIC \
         --from-beginning \
@@ -153,7 +153,7 @@ view_kafka_messages() {
 check_consumer_lag() {
     echo -e "${BLUE}Step 6: Checking consumer group lag...${NC}"
 
-    docker exec $KAFKA_CONTAINER kafka-consumer-groups.sh \
+    docker exec $KAFKA_CONTAINER /opt/kafka/bin/kafka-consumer-groups.sh \
         --bootstrap-server $BOOTSTRAP_SERVER \
         --group $GROUP \
         --describe 2>/dev/null || echo "Consumer group might not have connected yet"
@@ -216,4 +216,3 @@ main() {
 }
 
 main
-

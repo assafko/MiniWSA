@@ -40,7 +40,7 @@ sleep 10
 # Check if Kafka is ready
 MAX_ATTEMPTS=30
 ATTEMPT=0
-until docker exec miniwsa_kafka kafka-broker-api-versions.sh --bootstrap-server localhost:9092 &>/dev/null; do
+until docker exec miniwsa_kafka /opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 &>/dev/null; do
     ATTEMPT=$((ATTEMPT+1))
     if [ $ATTEMPT -ge $MAX_ATTEMPTS ]; then
         echo -e "${YELLOW}⚠ Kafka failed to start${NC}"
