@@ -1,3 +1,5 @@
+[![CI](https://github.com/assafko/MiniWSA/actions/workflows/ci.yml/badge.svg)](https://github.com/assafko/MiniWSA/actions/workflows/ci.yml)
+
 # Mini Security Analytics (MiniWSA)
 
 A Spring Boot backend service for ingesting, processing, enriching, and analyzing security events in real-time.
