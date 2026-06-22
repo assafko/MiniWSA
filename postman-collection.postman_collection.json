@@ -1,0 +1,145 @@
+{
+  "info": {
+    "_postman_id": "b7f2c2b0-0000-0000-0000-000000000000",
+    "name": "MiniWSA",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Rules",
+      "item": [
+        {
+          "name": "Create SQL Injection Rule",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/rules",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "v1", "rules"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ruleId\": \"rule-sql-injection-001\",\n  \"name\": \"SQL Injection Detection\",\n  \"description\": \"Detects SQL injection attack patterns\",\n  \"category\": \"INJECTION\",\n  \"severity\": \"CRITICAL\",\n  \"enabled\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Create XSS Rule",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/rules",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "v1", "rules"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ruleId\": \"rule-xss-001\",\n  \"name\": \"Cross-Site Scripting Detection\",\n  \"description\": \"Detects XSS attack patterns\",\n  \"category\": \"XSS\",\n  \"severity\": \"HIGH\",\n  \"enabled\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get All Rules",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/v1/rules",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "v1", "rules"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "Ingest High-Threat Event (DENY + /login)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/events/ingest",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "v1", "events", "ingest"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"eventId\": \"evt-login-001\",\n  \"timestamp\": \"2026-06-22T00:00:00Z\",\n  \"clientIp\": \"192.168.1.100\",\n  \"path\": \"/api/users/login\",\n  \"method\": \"POST\",\n  \"action\": \"DENY\",\n  \"rule\": {\n    \"id\": \"rule-sql-injection-001\"\n  },\n  \"payload\": \"{\\\"username\\\":\\\"admin\\\",\\\"password\\\":\\\"secret\\\"}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Ingest Batch Events",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/events/ingest/batch",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "v1", "events", "ingest", "batch"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"eventId\": \"evt-batch-001\",\n    \"timestamp\": \"2026-06-22T00:01:00Z\",\n    \"clientIp\": \"192.168.1.100\",\n    \"path\": \"/api/users\",\n    \"method\": \"GET\",\n    \"action\": \"MONITOR\",\n    \"rule\": {\n      \"id\": \"rule-sql-injection-001\"\n    }\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+

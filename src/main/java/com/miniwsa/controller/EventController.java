@@ -1,17 +1,18 @@
 package com.miniwsa.controller;
 
 import com.miniwsa.dto.SecurityEventRequest;
-import com.miniwsa.dto.SecurityEventResponse;
 import com.miniwsa.kafka.SecurityEventProducer;
 import com.miniwsa.service.EventService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * REST endpoints for security event ingestion and retrieval.

@@ -86,6 +86,7 @@ MiniWSA/
 
 - `POST /api/v1/events/ingest` - Ingest single event (201 Created)
 - `POST /api/v1/events/ingest/batch` - Ingest multiple events (201 Created)
+- `GET /api/v1/stats/summary` - Aggregated statistics (query: from, to, optional configId)
 - `POST /api/v1/rules` - Create rule (TBD)
 - `GET /api/v1/rules/:ruleId` - Get rule (TBD)
 
