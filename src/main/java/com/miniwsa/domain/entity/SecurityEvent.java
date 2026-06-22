@@ -7,8 +7,8 @@ import lombok.*;
 @Entity
 @Table(name = "security_events", indexes = {
         @Index(name = "idx_client_ip", columnList = "client_ip"),
-        @Index(name = "idx_received_at", columnList = "received_at"),
-        @Index(name = "idx_client_ip_received_at", columnList = "client_ip,received_at")
+        @Index(name = "idx_timestamp", columnList = "timestamp"),
+        @Index(name = "idx_client_ip_timestamp", columnList = "client_ip,timestamp")
 })
 @Getter
 @Setter

@@ -35,7 +35,7 @@ public class EventController {
      * Ingest a single security event asynchronously via Kafka.
      *
      * @param request the security event request
-     * @return 202 Accepted indicating the event has been queued for processing
+     * @return 201 Created indicating the event has been queued for processing
      */
     @PostMapping("/ingest")
     public ResponseEntity<String> ingestEvent(@Valid @RequestBody SecurityEventRequest request) {
@@ -44,7 +44,7 @@ public class EventController {
         // Send event to Kafka for asynchronous processing
         securityEventProducer.sendEvent(request);
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body("Event queued for processing: " + request.getEventId());
     }
 
@@ -52,7 +52,7 @@ public class EventController {
      * Ingest multiple security events in batch asynchronously via Kafka.
      *
      * @param requests list of security event requests
-     * @return 202 Accepted indicating all events have been queued for processing
+     * @return 201 Created indicating all events have been queued for processing
      */
     @PostMapping("/ingest/batch")
     public ResponseEntity<String> ingestBatchEvents(
@@ -62,7 +62,7 @@ public class EventController {
         // Send all events to Kafka for asynchronous processing
         securityEventProducer.sendEventBatch(requests);
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body("Batch of " + requests.size() + " events queued for processing");
     }
 }

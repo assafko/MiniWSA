@@ -89,6 +89,7 @@ MiniWSA/
 - `POST /api/v1/events/ingest` - Ingest single event (201 Created)
 - `POST /api/v1/events/ingest/batch` - Ingest multiple events (201 Created)
 - `GET /api/v1/stats/summary` - Aggregated statistics (query: from, to, optional configId)
+- `GET /api/v1/events/samples` - List enriched events with filters (configId, from/to, category, action) and pagination (limit, offset)
 - `POST /api/v1/rules` - Create rule (TBD)
 - `GET /api/v1/rules/:ruleId` - Get rule (TBD)
 
@@ -122,6 +123,22 @@ Orchestrates classification and threat scoring, ensuring all enriched data is re
 
 ### Event Service
 High-level orchestrator handling single/batch event ingestion with automatic enrichment and persistence.
+
+## Data Generator
+
+Generate NDJSON:
+
+```bash
+python3 scripts/generate_events.py --count 1000 --out events.ndjson
+```
+
+Post directly to API (batch 200):
+
+```bash
+python3 scripts/generate_events.py --count 5000 --post --batch-size 200 --api-base http://localhost:8080/api
+```
+
+Note: Ensure rules (e.g., rule-sql-injection-001) exist before posting.
 
 ## Next Steps
 

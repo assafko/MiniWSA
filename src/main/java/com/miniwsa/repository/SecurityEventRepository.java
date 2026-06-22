@@ -19,11 +19,11 @@ import java.util.List;
 @Repository
 public interface SecurityEventRepository extends JpaRepository<SecurityEvent, Long> {
     @Query(value = "SELECT se FROM SecurityEvent se WHERE se.clientIp = :clientIp " +
-                   "AND se.receivedAt >= :tenMinutesAgo ORDER BY se.receivedAt DESC")
+                   "AND se.timestamp >= :tenMinutesAgo ORDER BY se.timestamp DESC")
     List<SecurityEvent> findRecentEventsByClientIp(@Param("clientIp") String clientIp,
                                                    @Param("tenMinutesAgo") Long tenMinutesAgo);
 
-    @Query("SELECT COUNT(se) FROM SecurityEvent se WHERE se.receivedAt BETWEEN :from AND :to " +
+    @Query("SELECT COUNT(se) FROM SecurityEvent se WHERE se.timestamp BETWEEN :from AND :to " +
            "AND (:configId IS NULL OR se.configId = :configId)")
     long countByTimeRangeAndConfig(@Param("from") long from,
                                    @Param("to") long to,
@@ -31,7 +31,7 @@ public interface SecurityEventRepository extends JpaRepository<SecurityEvent, Lo
 
     @Query("SELECT r.category AS category, COUNT(se) AS count, AVG(se.threatScore) AS avgThreatScore " +
            "FROM SecurityEvent se JOIN se.rule r " +
-           "WHERE se.receivedAt BETWEEN :from AND :to " +
+           "WHERE se.timestamp BETWEEN :from AND :to " +
            "AND (:configId IS NULL OR se.configId = :configId) " +
            "GROUP BY r.category")
     List<CategoryStatsProjection> statsByCategory(@Param("from") long from,
@@ -40,7 +40,7 @@ public interface SecurityEventRepository extends JpaRepository<SecurityEvent, Lo
 
     @Query("SELECT se.action AS action, COUNT(se) AS count " +
            "FROM SecurityEvent se " +
-           "WHERE se.receivedAt BETWEEN :from AND :to " +
+           "WHERE se.timestamp BETWEEN :from AND :to " +
            "AND (:configId IS NULL OR se.configId = :configId) " +
            "GROUP BY se.action")
     List<ActionCountProjection> statsByAction(@Param("from") long from,
@@ -49,7 +49,7 @@ public interface SecurityEventRepository extends JpaRepository<SecurityEvent, Lo
 
     @Query("SELECT se.clientIp AS clientIp, COUNT(se) AS count, AVG(se.threatScore) AS avgThreatScore " +
            "FROM SecurityEvent se " +
-           "WHERE se.receivedAt BETWEEN :from AND :to " +
+           "WHERE se.timestamp BETWEEN :from AND :to " +
            "AND (:configId IS NULL OR se.configId = :configId) " +
            "GROUP BY se.clientIp ORDER BY COUNT(se) DESC")
     List<TopAttackerProjection> topAttackers(@Param("from") long from,
@@ -59,7 +59,7 @@ public interface SecurityEventRepository extends JpaRepository<SecurityEvent, Lo
 
     @Query("SELECT se.path AS path, COUNT(se) AS count " +
            "FROM SecurityEvent se " +
-           "WHERE se.receivedAt BETWEEN :from AND :to " +
+           "WHERE se.timestamp BETWEEN :from AND :to " +
            "AND (:configId IS NULL OR se.configId = :configId) " +
            "GROUP BY se.path ORDER BY COUNT(se) DESC")
     List<TopPathProjection> topPaths(@Param("from") long from,

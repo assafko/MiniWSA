@@ -125,7 +125,7 @@ send_batch_events() {
     HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
     BODY=$(echo "$RESPONSE" | head -n1)
 
-    if [ "$HTTP_CODE" -eq 202 ]; then
+    if [ "$HTTP_CODE" -eq 201 ]; then
         echo -e "${GREEN}✓ Batch sent successfully (HTTP $HTTP_CODE)${NC}"
         echo "Response: $BODY"
     else
@@ -188,10 +188,10 @@ show_summary() {
     echo -e "${BLUE}=== Test Summary ===${NC}"
     echo ""
     echo "✓ API Endpoint (single): POST http://localhost:8080/api/v1/events/ingest"
-    echo "  Returns: 202 Accepted"
+    echo "  Returns: 201 Created"
     echo ""
     echo "✓ API Endpoint (batch): POST http://localhost:8080/api/v1/events/ingest/batch"
-    echo "  Returns: 202 Accepted"
+    echo "  Returns: 201 Created"
     echo ""
     echo "✓ Kafka Topic: $TOPIC"
     echo "✓ Consumer Group: $GROUP"

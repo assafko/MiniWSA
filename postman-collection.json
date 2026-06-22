@@ -1,0 +1,113 @@
+{
+  "info": {
+    "_postman_id": "b7f2c2b0-0000-0000-0000-000000000000",
+    "name": "MiniWSA",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Rules",
+      "item": [
+        {
+          "name": "Create Rule",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "http://localhost:8080/api/v1/rules", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","rules"]},
+            "body": {"mode": "raw", "raw": "{\n  \"ruleId\": \"rule-id\",\n  \"name\": \"Rule Name\",\n  \"description\": \"...\",\n  \"category\": \"INJECTION\",\n  \"severity\": \"HIGH\",\n  \"enabled\": true\n}"}
+          }
+        },
+        {
+          "name": "Get All Rules",
+          "request": {"method": "GET", "url": {"raw": "http://localhost:8080/api/v1/rules", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","rules"]}}
+        },
+        {
+          "name": "Get Rule by ID",
+          "request": {"method": "GET", "url": {"raw": "http://localhost:8080/api/v1/rules/{{ruleId}}", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","rules","{{ruleId}}"]}}
+        },
+        {
+          "name": "Update Rule",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "http://localhost:8080/api/v1/rules/{{ruleId}}", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","rules","{{ruleId}}"]},
+            "body": {"mode": "raw", "raw": "{\n  \"name\": \"Updated Name\",\n  \"description\": \"...\",\n  \"category\": \"XSS\",\n  \"severity\": \"MEDIUM\",\n  \"enabled\": false\n}"}
+          }
+        },
+        {
+          "name": "Delete Rule",
+          "request": {"method": "DELETE", "url": {"raw": "http://localhost:8080/api/v1/rules/{{ruleId}}", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","rules","{{ruleId}}"]}}
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "Ingest Event",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "http://localhost:8080/api/v1/events/ingest", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","events","ingest"]},
+            "body": {"mode": "raw", "raw": "{\n  \"eventId\": \"evt-1\",\n  \"timestamp\": \"2026-01-01T00:00:00Z\",\n  \"clientIp\": \"1.2.3.4\",\n  \"path\": \"/api/v1/login\",\n  \"method\": \"POST\",\n  \"action\": \"DENY\",\n  \"rule\": {\n    \"id\": \"rule-sql-injection-001\"\n  }\n}"}
+          }
+        },
+        {
+          "name": "Ingest Batch Events",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "http://localhost:8080/api/v1/events/ingest/batch", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api","v1","events","ingest","batch"]},
+            "body": {"mode": "raw", "raw": "[\n  {\n    \"eventId\": \"evt-1\",\n    \"timestamp\": \"2026-01-01T00:00:00Z\",\n    \"clientIp\": \"1.2.3.4\",\n    \"path\": \"/api/v1/login\",\n    \"method\": \"POST\",\n    \"action\": \"DENY\",\n    \"rule\": {\n      \"id\": \"rule-sql-injection-001\"\n    }\n  }\n]"}
+          }
+        },
+        {
+          "name": "Samples (List events)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/v1/events/samples?limit=20&offset=0",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api","v1","events","samples"],
+              "query": [
+                {"key":"limit","value":"20"},
+                {"key":"offset","value":"0"},
+                {"key":"configId","value":"14227","disabled": true},
+                {"key":"from","value":"2024-01-01T00:00:00Z","disabled": true},
+                {"key":"to","value":"2024-01-02T00:00:00Z","disabled": true},
+                {"key":"category","value":"INJECTION","disabled": true},
+                {"key":"action","value":"DENY","disabled": true}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Stats",
+      "item": [
+        {
+          "name": "Summary",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/v1/stats/summary?from=2024-01-01T00:00:00Z&to=2024-01-02T00:00:00Z",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api","v1","stats","summary"],
+              "query": [
+                {"key":"from","value":"2024-01-01T00:00:00Z"},
+                {"key":"to","value":"2024-01-02T00:00:00Z"},
+                {"key":"configId","value":"14227","disabled": true}
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+

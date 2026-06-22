@@ -43,7 +43,7 @@ class EventControllerTest {
         mockMvc.perform(post("/v1/events/ingest")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isCreated())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Event queued for processing")));
 
         verify(securityEventProducer).sendEvent(any(SecurityEventRequest.class));
