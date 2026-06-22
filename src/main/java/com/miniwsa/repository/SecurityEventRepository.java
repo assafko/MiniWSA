@@ -1,10 +1,13 @@
 package com.miniwsa.repository;
 
 import com.miniwsa.domain.entity.SecurityEvent;
+import com.miniwsa.domain.enums.Action;
+import com.miniwsa.domain.enums.RuleCategory;
 import com.miniwsa.repository.projection.ActionCountProjection;
 import com.miniwsa.repository.projection.CategoryStatsProjection;
 import com.miniwsa.repository.projection.TopAttackerProjection;
 import com.miniwsa.repository.projection.TopPathProjection;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -63,5 +66,20 @@ public interface SecurityEventRepository extends JpaRepository<SecurityEvent, Lo
                                      @Param("to") long to,
                                      @Param("configId") Long configId,
                                      Pageable pageable);
+
+    @Query(value = "SELECT se FROM SecurityEvent se JOIN se.rule r WHERE " +
+            "(:from IS NULL OR se.timestamp >= :from) AND (:to IS NULL OR se.timestamp <= :to) AND " +
+            "(:configId IS NULL OR se.configId = :configId) AND (:action IS NULL OR se.action = :action) AND " +
+            "(:category IS NULL OR r.category = :category)",
+            countQuery = "SELECT COUNT(se) FROM SecurityEvent se JOIN se.rule r WHERE " +
+                    "(:from IS NULL OR se.timestamp >= :from) AND (:to IS NULL OR se.timestamp <= :to) AND " +
+                    "(:configId IS NULL OR se.configId = :configId) AND (:action IS NULL OR se.action = :action) AND " +
+                    "(:category IS NULL OR r.category = :category)")
+    Page<SecurityEvent> findSamples(@Param("configId") Long configId,
+                                    @Param("from") Long from,
+                                    @Param("to") Long to,
+                                    @Param("category") RuleCategory category,
+                                    @Param("action") Action action,
+                                    Pageable pageable);
 }
 
