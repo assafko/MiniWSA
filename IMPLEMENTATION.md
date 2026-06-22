@@ -74,7 +74,7 @@ public String classifyAttackType(RuleCategory category)
 - **`RuleRepository`**: JPA repository with `findByRuleId(String)` custom query
 - **`SecurityEventRepository`**: 
   - Custom query: `findRecentEventsByClientIp(clientIp, tenMinutesAgo)` for repeat offender detection
-  - Optimized with composite index: `(client_ip, received_at)`
+  - Optimized with composite index: `(client_ip, timestamp)`
 - **`GeoLocationRepository`**: `findByIpAddress(String)` for geolocation lookups
 
 ### Data Transfer Layer (`dto/`)
@@ -121,8 +121,8 @@ id (PK) | client_ip | path | http_method | action | payload | rule_id (FK) | tim
 
 **Indexes**:
 - `idx_client_ip` on `client_ip`
-- `idx_received_at` on `received_at`
-- `idx_client_ip_received_at` composite on `(client_ip, received_at)`
+- `idx_timestamp` on `timestamp`
+- `idx_client_ip_timestamp` composite on `(client_ip, timestamp)`
 
 ### Geo Locations Table (`geo_locations`)
 ```sql
@@ -211,7 +211,7 @@ curl -X POST http://localhost:8080/api/v1/events/ingest/batch \
 
 ## Performance Optimizations
 
-1. **Indexed Queries**: Composite index on (client_ip, received_at) for O(log n) repeat offender lookups
+1. **Indexed Queries**: Composite index on (client_ip, timestamp) for O(log n) repeat offender lookups
 2. **Read-Only Transactions**: Classification and enrichment services use `readOnly=true` for potential database optimizations
 3. **In-Bulk Loading**: Batch endpoint processes multiple events in single transaction
 4. **Lazy Fetching**: Rule entity uses lazy loading to prevent N+1 queries

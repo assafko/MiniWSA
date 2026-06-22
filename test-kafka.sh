@@ -72,7 +72,7 @@ send_single_event() {
     HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
     BODY=$(echo "$RESPONSE" | head -n1)
 
-    if [ "$HTTP_CODE" -eq 202 ]; then
+    if [ "$HTTP_CODE" -eq 201 ]; then
         echo -e "${GREEN}✓ Event sent successfully (HTTP $HTTP_CODE)${NC}"
         echo "Response: $BODY"
     else

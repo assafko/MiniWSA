@@ -93,7 +93,7 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "http://localhost:8080/api/v1/stats/summary?from=2024-01-01T00:00:00Z&to=2024-01-02T00:00:00Z",
+              "raw": "http://localhost:8080/api/v1/stats/summary?configId=1&from=2024-01-01T00:00:00Z&to=2024-01-02T00:00:00Z",
               "protocol": "http",
               "host": ["localhost"],
               "port": "8080",
