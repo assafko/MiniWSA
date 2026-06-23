@@ -69,6 +69,37 @@ curl -X POST http://localhost:8080/api/v1/events/ingest \
 - Server-side `receivedAt` timestamp assignment
 - Indexed database queries for performance
 
+## Pipeline Architecture
+
+```
+Clients / Data Generator
+        |
+        v
+     REST API
+(/v1/events/ingest[/batch])
+        |
+        v
+    Kafka topic
+(security-events-topic)
+        |
+        v
+ Kafka Consumers (x3)
+(SecurityEventConsumer)
+        |
+        v
+Enrichment & Scoring
+(classification, threat)
+        |
+        v
+    PostgreSQL
+(security_events, rules)
+        |
+        v
+ Read APIs / Analytics
+- /v1/stats/summary
+- /v1/events/samples
+```
+
 ## Project Structure
 
 ```
@@ -95,8 +126,8 @@ MiniWSA/
 
 ## REST API Endpoints
 
-- `POST /api/v1/events/ingest` - Queue single event (202 Accepted)
-- `POST /api/v1/events/ingest/batch` - Queue multiple events (202 Accepted)
+- `POST /api/v1/events/ingest` - Queue single event (201 Created)
+- `POST /api/v1/events/ingest/batch` - Queue multiple events (201 Created)
 - `GET /api/v1/events/samples` - List enriched events with filters (configId, from/to, category, action) and pagination (limit, offset)
 - `GET /api/v1/stats/summary` - Aggregated statistics (query: from, to, optional configId)
 - `POST /api/v1/rules` - Create rule
@@ -159,11 +190,9 @@ Note: Ensure rules (e.g., rule-sql-injection-001) exist before posting.
 - [ ] Implement Rule Management API (CRUD)
 - [ ] Add event retrieval and filtering
 - [ ] Build analytics queries (trends, statistics)
-- [ ] Add Kafka consumer for async ingestion
+- [ ] Index partitioning, sub-partitioning via Liquibase 
 - [ ] Implement geolocation enrichment
 - [ ] Add comprehensive test suite
 - [ ] Implement API authentication
-
-## License
 
 Mini Security Analytics Pipeline
