@@ -16,6 +16,17 @@ repositories {
     mavenCentral()
 }
 
+configurations.configureEach {
+    resolutionStrategy {
+        eachDependency { details ->
+            if (details.requested.group == 'org.testcontainers') {
+                details.useVersion '1.21.4'
+                details.because 'Run ITs on Testcontainers 1.21.4 (override Spring dependency management)'
+            }
+        }
+    }
+}
+
 dependencies {
     // Spring Boot Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -43,10 +54,23 @@ dependencies {
 
     // Spring Boot Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Integration testing (Testcontainers)
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation platform('org.testcontainers:testcontainers-bom:1.21.4')
+    testImplementation 'org.testcontainers:junit-jupiter:1.21.4'
+    testImplementation 'org.testcontainers:postgresql:1.21.4'
+    testImplementation 'org.testcontainers:kafka:1.21.4'
 }
+
 
 tasks.named('test') {
     useJUnitPlatform()
+
+    testLogging {
+        showStandardStreams = true
+        exceptionFormat = 'full'
+    }
 }
 
 springBoot {

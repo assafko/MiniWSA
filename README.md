@@ -138,6 +138,21 @@ MiniWSA/
   
 See postman-collections.json for postman collections
 
+## Testing
+
+### Unit + Web (default)
+Runs fast tests (unit tests + `@WebMvcTest` controller tests):
+```bash
+./gradlew test
+```
+
+### Integration tests (SpringBootTest + Testcontainers)
+We also have end-to-end API integration tests under `src/test/java/com/miniwsa/it/*IT.java`.
+They run against **real Postgres + Kafka** via Testcontainers and are **opt-in** (requires Docker):
+```bash
+RUN_INTEGRATION_TESTS=true ./gradlew test
+```
+
 ## Technology Stack
 
 - **Java 17** with Spring Boot 3.2.0
@@ -148,6 +163,7 @@ See postman-collections.json for postman collections
 - **Jakarta Bean Validation** for request validation
 - **Gradle 8.5** for build management
 - **Lombok** for reducing boilerplate
+- **Testcontainers** (Postgres + Kafka) for integration tests
 
 ## Implemented Components
 
