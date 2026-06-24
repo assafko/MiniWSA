@@ -135,6 +135,8 @@ MiniWSA/
 - `GET /api/v1/rules` - List rules
 - `PUT /api/v1/rules/{ruleId}` - Update rule
 - `DELETE /api/v1/rules/{ruleId}` - Delete rule
+  
+See postman-collections.json for postman collections
 
 ## Technology Stack
 
@@ -146,10 +148,6 @@ MiniWSA/
 - **Jakarta Bean Validation** for request validation
 - **Gradle 8.5** for build management
 - **Lombok** for reducing boilerplate
-
-## Documentation
-
-For detailed setup, configuration, and API usage, see [SETUP.md](./SETUP.md)
 
 ## Implemented Components
 
@@ -173,14 +171,9 @@ High-level orchestrator handling single/batch event ingestion with automatic enr
 
 Generate realistic events with attack waves (NDJSON or post to API):
 
-```bash
-python3 scripts/generate_events.py --count 1000 --out events.ndjson
-```
-
 Post directly to API (batch 200):
-
 ```bash
-python3 scripts/generate_events.py --count 5000 --post --batch-size 200 --api-base http://localhost:8080/api
+python3 scripts/generate_events.py --count 5000 --post --batch-size 200 --api-base http://localhost:8080/api --config-ids 1 2 3
 ```
 
 Note: Ensure rules (e.g., rule-sql-injection-001) exist before posting.

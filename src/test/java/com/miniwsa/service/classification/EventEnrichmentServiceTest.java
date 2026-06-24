@@ -21,11 +21,10 @@ class EventEnrichmentServiceTest {
 
     @Test
     void enrichEvent_missingRuleId_throws() {
-        ClassificationService classificationService = mock(ClassificationService.class);
         ThreatScoreCalculator threatScoreCalculator = mock(ThreatScoreCalculator.class);
         RuleRepository ruleRepository = mock(RuleRepository.class);
 
-        EventEnrichmentService service = new EventEnrichmentService(classificationService, threatScoreCalculator, ruleRepository);
+        EventEnrichmentService service = new EventEnrichmentService(threatScoreCalculator, ruleRepository);
 
         SecurityEventRequest req = SecurityEventRequest.builder()
                 .eventId("e1")
@@ -42,11 +41,10 @@ class EventEnrichmentServiceTest {
 
     @Test
     void enrichEvent_happyPath_mapsFields() {
-        ClassificationService classificationService = mock(ClassificationService.class);
         ThreatScoreCalculator threatScoreCalculator = mock(ThreatScoreCalculator.class);
         RuleRepository ruleRepository = mock(RuleRepository.class);
 
-        EventEnrichmentService service = new EventEnrichmentService(classificationService, threatScoreCalculator, ruleRepository);
+        EventEnrichmentService service = new EventEnrichmentService(threatScoreCalculator, ruleRepository);
 
         Rule rule = Rule.builder()
                 .id(10L)
@@ -58,7 +56,6 @@ class EventEnrichmentServiceTest {
                 .build();
 
         when(ruleRepository.findByRuleId("R-1")).thenReturn(Optional.of(rule));
-        when(classificationService.classifyAttackType(RuleCategory.XSS)).thenReturn("Cross-Site Scripting");
         when(threatScoreCalculator.calculateThreatScore(eq(Severity.HIGH), eq(Action.ALERT), anyString(), anyString()))
                 .thenReturn(55);
 

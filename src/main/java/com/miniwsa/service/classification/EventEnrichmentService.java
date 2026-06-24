@@ -2,6 +2,7 @@ package com.miniwsa.service.classification;
 
 import com.miniwsa.domain.entity.Rule;
 import com.miniwsa.domain.entity.SecurityEvent;
+import com.miniwsa.domain.enums.RuleCategory;
 import com.miniwsa.dto.SecurityEventRequest;
 import com.miniwsa.repository.RuleRepository;
 import org.springframework.stereotype.Service;
@@ -19,14 +20,11 @@ import java.time.Instant;
 @Service
 public class EventEnrichmentService {
 
-    private final ClassificationService classificationService;
     private final ThreatScoreCalculator threatScoreCalculator;
     private final RuleRepository ruleRepository;
 
-    public EventEnrichmentService(ClassificationService classificationService,
-                                   ThreatScoreCalculator threatScoreCalculator,
+    public EventEnrichmentService(ThreatScoreCalculator threatScoreCalculator,
                                    RuleRepository ruleRepository) {
-        this.classificationService = classificationService;
         this.threatScoreCalculator = threatScoreCalculator;
         this.ruleRepository = ruleRepository;
     }
@@ -48,7 +46,7 @@ public class EventEnrichmentService {
                 .orElseThrow(() -> new IllegalArgumentException("Rule not found: " + request.getRule().getId()));
 
         // Classify attack type
-        String attackType = classificationService.classifyAttackType(rule.getCategory());
+        String attackType = classifyAttackType(rule.getCategory());
 
         // Parse provided timestamp (ISO-8601) to epoch millis; fall back to numeric parse or current time
         Long eventTimestamp;
@@ -96,6 +94,13 @@ public class EventEnrichmentService {
                 .requestSize(request.getRequestSize())
                 .responseSize(request.getResponseSize())
                 .build();
+    }
+
+    String classifyAttackType(RuleCategory category) {
+        if (category == null) {
+            return "Unknown";
+        }
+        return category.getDisplayName();
     }
 }
 
