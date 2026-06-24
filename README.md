@@ -165,6 +165,44 @@ RUN_INTEGRATION_TESTS=true ./gradlew test
 - **Lombok** for reducing boilerplate
 - **Testcontainers** (Postgres + Kafka) for integration tests
 
+## Storage Architecture for Big Data Scale
+
+### Why PostgreSQL + Kafka?
+
+MiniWSA employs a **dual-storage strategy** optimized for high-volume security event ingestion and analytics:
+
+#### 1. **Apache Kafka (Ingest & Buffering)**
+- **Decoupled ingestion**: REST endpoints immediately publish to Kafka topics (non-blocking)
+- **High throughput**: Handles burst traffic without blocking clients
+- **Consumer parallelism**: 3+ concurrent consumers process events independently
+- **Fault tolerance**: Kafka replicas (upgradeable to 3 for production) ensure no event loss
+- **Scalability path**: Multi-broker cluster deployment for horizontal scaling
+
+#### 2. **PostgreSQL (Long-term Analytics)**
+- **Columnar indexing**: Composite index on `(client_ip, timestamp)` for fast time-range + IP queries
+- **Partitioning strategy**: Table can be range-partitioned by `timestamp` for faster scans on large historical datasets
+- **ACID compliance**: Ensures data integrity for audit and compliance requirements
+- **Time-series optimized**: `timestamp` and `receivedAt` columns enable efficient filtering (days, weeks, months)
+- **Enrichment storage**: All 25+ fields (threat_score, attack_type, geo_country) persist for detailed forensics
+
+#### 3. **Why Not NoSQL for Everything?**
+- **Compliance**: Security events require transaction guarantees and audit trails (PostgreSQL ACID model)
+- **Analytics queries**: Complex aggregations across timestamps, IPs, and threat scores need SQL
+- **Cost**: PostgreSQL scales efficiently for 100M+ events with proper indexing and partitioning
+
+#### 4. **Big Data Growth Path**
+- **Phase 1 (Current)**: Single PostgreSQL instance, Kafka with 3 partitions
+- **Phase 2 (100M events)**: Enable table partitioning by `timestamp` (monthly/weekly)
+- **Phase 3 (1B+ events)**: Federated databases (separate reads/writes) or time-series DB (TimescaleDB, Citus) as PostgreSQL extension
+- **Phase 4 (Multi-region)**: Kafka multi-cluster replication + geographically distributed PostgreSQL replicas
+
+#### 5. **Performance Optimizations Already In Place**
+- **Indexes**: 3 indexes on security_events table (client_ip, timestamp, composite)
+- **Batch ingestion**: `/events/ingest/batch` endpoint reduces I/O operations
+- **Kafka partitioning**: 3 partitions enable parallel consumption
+- **Lazy-loading**: ManyToOne relationship to Rule uses FetchType.LAZY
+- **JSON serialization**: Kafka uses efficient JSON format, not Avro (upgradeable for stricter schemas)
+
 ## Implemented Components
 
 ### Classification Service
